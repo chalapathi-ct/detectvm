@@ -5,10 +5,9 @@
 int main(){
     bool isVm = false;
 
-    if (DetectVM::IsVboxVM() == true) {isVm = true; printf("Running in vbox!");}
-    else if (DetectVM::IsVMwareVM() == true) {isVm = true; printf("Running in vmware!");}
-    else if (DetectVM::IsMsHyperV() == true) {isVm = true; printf("Running in hyper-v!");}
-    else { printf("Not running in a VM!");}
-
-    if (isVm){DetectVM::SelfDelete(); exit(-1);}
+    if (DetectVM::IsVboxVM() == true) {isVm = true; printf("1");}
+    else if (DetectVM::IsVMwareVM() == true) {isVm = true; printf("1");}
+    else if (DetectVM::IsMsHyperV() == true) {isVm = true; printf("1");}
+    else { printf("0");}
+    return 0;
 }

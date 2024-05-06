@@ -16,7 +16,7 @@ Self Delete function spawns a hidden cmd shell which gets the file path and dele
 Uses standard libraries  
 Can be built using g++ (Sometimes cannot run on VMs using gcc unsure why)
 ```
-g++ antivm.cpp -o antivm.exe -static-libgcc -static-libstdc++
+g++ antivm.cpp -o antivm.exe -static-libgcc -static-libstdc++  -static -lpthread
 ```
 
 ## Demo 🎥
