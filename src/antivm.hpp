@@ -1,33 +1,37 @@
+#pragma once
+
 #include <windows.h>
 #include <tchar.h>
 #include <stdbool.h>
 
-#include "hyperv.hpp"
 #include <cstdint>
 
-bool cpuid_check() {
+bool cpuid_check()
+{
     unsigned int eax, ebx, ecx, edx;
     char hyper_vendor_id[13];
 
     __asm__ __volatile__("cpuid"
-                         : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx)
-                         : "a" (0x1));
+                         : "=a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx)
+                         : "a"(0x1));
 
-    if (ecx & (1 << 31)) {
+    if (ecx & (1 << 31))
+    {
         __asm__ __volatile__("cpuid"
-                             : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx)
-                             : "a" (0x40000000));
+                             : "=a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx)
+                             : "a"(0x40000000));
 
         memcpy(hyper_vendor_id + 0, &ebx, 4);
         memcpy(hyper_vendor_id + 4, &ecx, 4);
         memcpy(hyper_vendor_id + 8, &edx, 4);
         hyper_vendor_id[12] = '\0';
 
-        if (!strcmp(hyper_vendor_id, "VMwareVMware")) {
-            return true; 
+        if (!strcmp(hyper_vendor_id, "VMwareVMware"))
+        {
+            return true;
         }
     }
-    
+
     return false;
 }
 
@@ -90,17 +94,6 @@ bool bios_version_check()
 
 namespace DetectVM
 {
-    bool IsVboxVM()
-    {
-        HANDLE handle = CreateFile(_T("\\\\.\\VBoxMiniRdrDN"), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-        if (handle != INVALID_HANDLE_VALUE)
-        {
-            CloseHandle(handle);
-            return true;
-        }
-        return false;
-    }
-
     bool IsVMwareVM()
     {
         HKEY hKey = 0;
@@ -109,12 +102,7 @@ namespace DetectVM
         {
             RegCloseKey(hKey);
             return true;
-        } 
+        }
         return cpuid_check() && bios_version_check();
-    }
-
-    bool IsMsHyperV()
-    {
-        return HyperV::DetectBySystemManufacturer() || HyperV::DetectByBiosVendor() || HyperV::DetectBySystemFamily() || HyperV::DetectByProductName();
     }
 }
